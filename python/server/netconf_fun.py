@@ -235,7 +235,8 @@ def getSchemaData(node_ip, ne_type, schemaName):
     namePos = schemaName.rindex('\\')
     tableName = schemaName[namePos+1:]
 
-    running_config = m.get_config("running", filter = ( 'subtree', netconf_filter))
+    #running_config = m.get_config("running", filter = ( 'subtree', netconf_filter))
+    running_config = m.get(filter = ( 'subtree', netconf_filter))
     print(netconf_filter)
 
     tableData = {}
