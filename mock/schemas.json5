@@ -1,0 +1,78 @@
+{
+      items: [
+        {
+          id: 1,
+          name: 'L3VPN',
+          children: [
+            {
+              id: 2,
+              name: 'VPN Instances',
+              children: [
+                {
+                  id: 201,
+                  name: 'VPN Instance',
+                },
+                {
+                  id: 202,
+                  name: 'Static L3VPN',
+                },
+                {
+                  id: 203,
+                  name: 'HQoS Policy Inbound',
+                },
+                {
+                  id: 204,
+                  name: 'QoS VRF Config',
+                },
+                {
+                  id: 205,
+                  name: 'VRF In DiffServ',
+                },
+                {
+                  id: 206,
+                  name: 'VRF Out DiffServ',
+                },
+                {
+                  id: 207,
+                  name: 'VxLAN VNI',
+                },
+              ],
+            }
+          ]
+        },
+            {
+              id: 3,
+              name: 'EVPN',
+              children: [
+                {
+                  id: 301,
+                  name: 'VPN List',
+                },
+                {
+                  id: 302,
+                  name: 'Interfaces',
+                },
+              ],
+            },
+            {
+              id: 4,
+              name: 'ISIS',
+              children: [
+                {
+                  id: 401,
+                  name: 'ISIS Instances',
+              children: [
+                {
+                  id: 401,
+                  name: 'Interfaces',
+                },
+                {
+                  id: 402,
+                  name: 'Address Family',
+                },
+              ],
+                },
+              ],
+            },
+    ],
+}

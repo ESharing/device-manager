@@ -1,0 +1,32 @@
+/**
+ * @jest-environment jsdom
+ */
+import { mount } from '@vue/test-utils';
+import HelloWorld from '@/components/HelloWorld.vue';
+import axios from 'axios';
+
+jest.mock('axios', () => ({
+  get: () =>
+    Promise.resolve({
+      data: {
+        results: [{ email: 'mockAxios@email.com' }],
+      },
+    }),
+}));
+
+describe('HelloWorld.vue', () => {
+  it('click and fetch data...', async (done) => {
+    const wrapper = mount(HelloWorld, {
+      mocks: {
+        axios,
+      },
+    });
+
+    await wrapper.find('button').trigger('click');
+
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.find('h1').text()).toContain('@');
+      done();
+    });
+  });
+});

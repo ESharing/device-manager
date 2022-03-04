@@ -1,0 +1,68 @@
+<template>
+    
+<splitpanes class="default-theme" :dbl-click-splitter="false" style="height: 960px ">
+  <pane min-size="10" max-size="50">
+  <v-row justify="center" width>
+    <v-expansion-panels accordion multiple>
+      <v-expansion-panel>
+        <v-expansion-panel-header>Schema</v-expansion-panel-header>
+        <v-expansion-panel-content id="schema" >
+    <vuescroll :ops="ops">
+            <schema-tree-navi></schema-tree-navi>
+    </vuescroll>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+      <v-expansion-panel>
+        <v-expansion-panel-header>Object</v-expansion-panel-header>
+        <v-expansion-panel-content id="object" >
+            <object-tree-navi></object-tree-navi>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+  </v-row>
+  </pane>
+  <pane min-size="10" max-size="90">
+  </pane>
+</splitpanes>
+
+</template>
+
+<script>
+import { Splitpanes, Pane } from 'splitpanes'
+import 'splitpanes/dist/splitpanes.css'
+import SchemaTreeNavi from './components/SchemaTreeNavi.vue'
+import ObjectTreeNavi from './components/ObjectTreeNavi.vue'
+import vuescroll from 'vuescroll';
+
+export default {
+  name: 'App',
+    data() {
+      return {
+        ops: {
+          vuescroll: {},
+          scrollPanel: {},
+          rail: {},
+          bar: {
+            background: '#bbbebb',
+          }
+        }
+      }
+    },  
+  components: { Splitpanes, Pane, SchemaTreeNavi, ObjectTreeNavi, vuescroll },
+}
+
+</script>
+
+<style>
+#schema > .v-expansion-panel-content__wrap, #object > .v-expansion-panel-content__wrap {
+  padding: 0px 0px 0px;
+  max-height: 50%;
+}
+
+/*
+.splitpanes--vertical > .splitpanes__splitter {
+  min-width: 6px;
+  background: linear-gradient(90deg, #ccc, #111);
+}
+*/
+</style>
