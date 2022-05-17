@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wym-dvm-be
+spec:
+  selector:
+    matchLabels:
+      app: wym-dvm-be
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wym-dvm-be
+    spec:
+      containers:
+      - name: wym-dvm-be
+        image: "nexus.utstar.com/wym_dvm_be:latest"
+        ports:
+        - containerPort: 8081
