@@ -18,7 +18,7 @@
     </pane>
     <pane size="85" min-size="10" max-size="90">
         <splitpanes horizontal>
-            <pane size=80 min-size=40>
+            <pane size=75 min-size=40>
                 <splitpanes>
                     <pane size=100 min-size=40>
                       <data-table></data-table>
@@ -31,8 +31,8 @@
                     </pane>
                 </splitpanes>
             </pane>
-            <pane size=20>
-                <p>In this example the splitters are thin lines but the reactive touch zone is spread to 30 pixels all around!</p>
+            <pane size=27>
+                <p>TBD</p>
             </pane>
         </splitpanes>
     </pane>
@@ -75,5 +75,4 @@ export default {
         DataTable
     },
 }
-
 </script>

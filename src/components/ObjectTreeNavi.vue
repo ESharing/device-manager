@@ -2,6 +2,7 @@
   <v-card
     class="mx-auto"
     max-width="1000"
+    height="3000"
   >
       <v-text-field
         v-model="search"

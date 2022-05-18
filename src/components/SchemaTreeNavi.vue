@@ -1,5 +1,5 @@
 <template>
-<v-card class="mx-auto" max-width="1000">
+<v-card class="mx-auto" max-width="1000" height="6000">
     <v-text-field v-model="search" label="Search Schema" solo dense hide-details clearable clear-icon="mdi-close-circle-outline"></v-text-field>
     <v-card-text>
         <v-treeview activatable hoverable :dense="true" :multiple-active="false" :items="items" :search="search" :filter="filter" :open.sync="open" :active.sync="active">
