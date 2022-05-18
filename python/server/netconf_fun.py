@@ -1,3 +1,4 @@
+import logging
 from typing import ItemsView
 from ncclient import manager
 from jtox2treeview import *
@@ -12,6 +13,10 @@ schemaStore = {}
 SLOT_MASK = 0x1F800000
 PORT_MASK = 0x0007F000
 
+logging.basicConfig(
+       level=logging.INFO,
+   )
+
 netconf_filter_MO = """
 <MOs xmlns="urn.utstar:uar:MO">
     <MO>
@@ -19,11 +24,12 @@ netconf_filter_MO = """
 </MOs>
 """
 def getNetconfConnection(node_ip,p=830,user='admin',pw='AdMiN123'):
-    if ( node_ip in currentConns ) :
-        print ('getSchemas connection existed')
+    if ( node_ip in currentConns and currentConns[node_ip].connected) :
+        #print ('getSchemas connection existed')
         return currentConns[node_ip]
     else:        
         currentConns[node_ip] = manager.connect(host=node_ip,port=p,username=user,password=pw,hostkey_verify=False)
+        #manager.set_logger_level(currentConns[node_ip], logging.DEBUG)
         return currentConns[node_ip]
 
 def cardToTreeData(cards):
@@ -225,12 +231,13 @@ def getSchemaData(node_ip, ne_type, schemaName):
     
 ## construct the netconf_filter
     netconf_filter = makeNetconfFilter(ne_type,schemaName)
-    #print (netconf_filter)
 
     namePos = schemaName.rindex('\\')
     tableName = schemaName[namePos+1:]
 
     running_config = m.get_config("running", filter = ( 'subtree', netconf_filter))
+    print(netconf_filter)
+
     tableData = {}
     tableDataRecords = toUITableData(xmltodict.parse(running_config.xml)['nc:rpc-reply']['data'], [], {}, tableName)
     if len(tableDataRecords) == 0:
