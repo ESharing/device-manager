@@ -47,7 +47,11 @@
 
 <script>
 import axios from 'axios';
-import { isValidIPv4,getUrlKey } from '@/utils/tools';
+import {
+  isValidIPv4,
+  isValidPort,
+  getUrlKey
+} from '@/utils/tools';
 import { mdiEthernet } from '@mdi/js';
 
   export default {
@@ -65,7 +69,11 @@ import { mdiEthernet } from '@mdi/js';
   },
   mounted() {
     this.node_IP = getUrlKey('ip',window.location.href);
+    this.node_port = getUrlKey('port',window.location.href);
     this.node_type = getUrlKey('type',window.location.href); 
+    if ( !isValidPort(this.node_port) ) {
+      alert('Port should be 1-65535')
+    }
     if ( isValidIPv4(this.node_IP) ) { 
       this.items = [];
       this.getObjects();
@@ -87,7 +95,7 @@ import { mdiEthernet } from '@mdi/js';
       return axios({
         method: 'get',
         baseURL: '/api',
-        url: `/objects?ip=${this.node_IP}&type=${this.node_type}`,
+        url: `/objects?ip=${this.node_IP}&port=${this.node_port}&type=${this.node_type}`,
       })
         .then( response => {
           console.log("xxxxxx" + response.data );

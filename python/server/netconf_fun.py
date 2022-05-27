@@ -24,13 +24,14 @@ netconf_filter_MO = """
 </MOs>
 """
 def getNetconfConnection(node_ip,p=830,user='admin',pw='AdMiN123'):
-    if ( node_ip in currentConns and currentConns[node_ip].connected) :
+    key = node_ip + str(p)
+    if ( key in currentConns and currentConns[key].connected) :
         #print ('getSchemas connection existed')
-        return currentConns[node_ip]
+        return currentConns[key]
     else:        
-        currentConns[node_ip] = manager.connect(host=node_ip,port=p,username=user,password=pw,hostkey_verify=False)
+        currentConns[key] = manager.connect(host=node_ip,port=p,username=user,password=pw,hostkey_verify=False)
         #manager.set_logger_level(currentConns[node_ip], logging.DEBUG)
-        return currentConns[node_ip]
+        return currentConns[key]
 
 def cardToTreeData(cards):
     treeData = {'items':[]}
@@ -55,7 +56,7 @@ def cardToTreeData(cards):
     return treeData
 
 #m = manager.connect(host='10.5.128.207',port=830,username='admin',password='AdMiN123',hostkey_verify=False)
-def getSchemas(node_ip, ne_type):
+def getSchemas(node_ip, port, ne_type):
     if ne_type not in nodeSchema:
         nodeSchema[ne_type] = {}
         schemaStore[ne_type] = {}
@@ -99,8 +100,8 @@ def getSchemasFromFile(ne_type):
     return schemas
 '''
 
-def getObjects(node_ip, ne_type):
-    m = getNetconfConnection(node_ip)
+def getObjects(node_ip,port, ne_type):
+    m = getNetconfConnection(node_ip,port)
     
     ''' currently, only use UT's MO to get card and interface
     NE_Type = 'UNKNOWN'
@@ -219,8 +220,8 @@ def getTableHeaderByRow(row):
         header.append(headerItem)
     return header
 
-def getSchemaData(node_ip, ne_type, schemaName):
-    m = getNetconfConnection(node_ip)
+def getSchemaData(node_ip, port, ne_type, schemaName):
+    m = getNetconfConnection(node_ip,port)
         
     NE_Type = 'UNKNOWN'
     modules = []

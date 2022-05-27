@@ -69,6 +69,7 @@ export default {
     },
     getSchemaData: function () {
       const ip = getUrlKey('ip', window.location.href); 
+      const port = getUrlKey('port',window.location.href);
       const type = getUrlKey('type', window.location.href); 
       if (this.$store.state.selectedSchema == '')
         return;
@@ -77,7 +78,7 @@ export default {
       return axios({
           method: 'get',
           baseURL: '/api',
-          url: `/schema-data?ip=${ip}&type=${type}&schema-name=${this.$store.state.selectedSchema}`,
+          url: `/schema-data?ip=${ip}&port=${port}&type=${type}&schema-name=${this.$store.state.selectedSchema}`,
         })
         .then(response => {
           this.items = response.data.items;
