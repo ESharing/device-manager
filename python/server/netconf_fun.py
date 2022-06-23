@@ -12,10 +12,55 @@ nodeSchema = {}
 schemaStore = {}
 SLOT_MASK = 0x1F800000
 PORT_MASK = 0x0007F000
+SUBPORT_MASK = 0x00000FFF
+VLAN_INTERNAL = 0x00500000
+TYPE_MASK = 0xE0000000
+L0=538446336
+L9=538446345
+CONSOLE=538446592
 
 logging.basicConfig(
        level=logging.INFO,
    )
+
+def IfIndexToIfName(IfIndex):
+    intf_num = int(IfIndex[13:])
+
+    if (intf_num >= L0 and intf_num <= L9 ):
+        return (f'L{intf_num - L0}')
+    
+    if (intf_num == CONSOLE):
+        return 'CONSOLE'
+    
+    interface_type = (intf_num & TYPE_MASK) >> 29
+    if interface_type == 1: # eth including eth sub
+        interface_type_str = 'eth'
+    if interface_type == 2: # flexe client
+        interface_type_str = 'flexe'
+    if interface_type == 3: # flexe client subinterface
+        interface_type_str = 'flexe'
+    if interface_type == 4: # l2/l3 ve interface
+        interface_type_str = 've'
+    slot = (intf_num & SLOT_MASK) >> 23
+    port = (intf_num & PORT_MASK) >> 12
+    sub_port = (intf_num & SUBPORT_MASK)
+
+    if interface_type == 1:
+        if intf_num & VLAN_INTERNAL:
+            return (f'{interface_type_str} {slot+1}.{port+1}.{sub_port}')
+        else:
+            return (f'{interface_type_str} {slot+1}.{port+1}')
+    
+    if interface_type == 2: #flexe_client
+            return (f'{interface_type_str} {sub_port}')
+
+    if interface_type == 3: # sub port of flexe_client
+            return (f'{interface_type_str} {sub_port}.{port}')
+
+    if interface_type == 4: # ve interface
+            return (f'{interface_type_str} {sub_port}')
+
+    return 'UNKNOWN'
 
 netconf_filter_MO = """
 <MOs xmlns="urn.utstar:uar:MO">
@@ -64,12 +109,18 @@ def getSchemas(node_ip, port, ne_type):
     return nodeSchema[ne_type]
 
 def getSchemasFromFile(ne_type):
-  with open(sys.path[0] + '/cucc-yang/jtox.json') as f:
-  #with open('.\cucc-yang\jtox-if-acl.json') as f:
-    schemaStore[ne_type] = json.load(f)
-  #schemaStore[ne_type] = copy.deepcopy(data)
-  #schemaModule = data["modules"]
-  return generateSchemas(schemaStore[ne_type]["tree"], schemaStore[ne_type]["modules"])
+  if ( ne_type == "UT"):
+    with open(sys.path[0] + '/ut-yang/jtox.json') as f:
+    #with open('.\cucc-yang\jtox-if-acl.json') as f:
+        schemaStore[ne_type] = json.load(f)
+        #schemaStore[ne_type] = copy.deepcopy(data)
+        #schemaModule = data["modules"]
+        return generateSchemas(schemaStore[ne_type]["tree"], schemaStore[ne_type]["modules"])
+  else:
+    with open(sys.path[0] + '/cucc-yang/jtox.json') as f:
+        schemaStore[ne_type] = json.load(f)
+        return generateSchemas(schemaStore[ne_type]["tree"], schemaStore[ne_type]["modules"])
+
   #print (data["modules"].keys())
 '''    
     m = getNetconfConnection(node_ip)
@@ -222,14 +273,6 @@ def getTableHeaderByRow(row):
 
 def getSchemaData(node_ip, port, ne_type, schemaName):
     m = getNetconfConnection(node_ip,port)
-        
-    NE_Type = 'UNKNOWN'
-    modules = []
-    if ( ne_type.find('UT') != -1):
-            NE_Type = 'urn.utstar'
-    if ( ne_type.find('CUCC') != -1):
-            NE_Type = 'chinaunicom'
-    
 ## construct the netconf_filter
     netconf_filter = makeNetconfFilter(ne_type,schemaName)
 
@@ -244,10 +287,21 @@ def getSchemaData(node_ip, port, ne_type, schemaName):
     tableDataRecords = toUITableData(xmltodict.parse(running_config.xml)['nc:rpc-reply']['data'], [], {}, tableName)
     if len(tableDataRecords) == 0:
         return {}
-    else:
-        tableData['items'] = tableDataRecords
-        tableData['headers'] = getTableHeaderByRow(tableData['items'][0])
-    
+
+    tableData['items'] = tableDataRecords
+
+    # add column that translating the ifindex to interfaceName 
+    if ( ne_type.find('UT') != -1):
+        if 'IfIndex' in tableData['items'][0]:
+            #add item #IfName
+            recCount = len(tableData['items'])
+            i = 0
+            while i < recCount:
+                tableData['items'][i]['#IfName'] = IfIndexToIfName(tableData['items'][i]['IfIndex'])
+                i += 1
+
+    tableData['headers'] = getTableHeaderByRow(tableData['items'][0])
+
     return tableData
 '''
     return {

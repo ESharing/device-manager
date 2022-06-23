@@ -3,10 +3,14 @@
   <v-card class="mx-auto" outlined>
     <v-card-actions>
       <v-btn small @click="getSchemaData">Query</v-btn>
+      <v-btn disabled text v-show="isSelectedTable" right>{{tableLabel}}</v-btn>
+      <!--
+      <v-btn small @click="translateColumn" v-if="isUT">Translate</v-btn>
       <v-btn small>Add</v-btn>
       <v-btn small>Edit</v-btn>
       <v-btn small>Delete</v-btn>
       <v-btn small @click="cleanTable">Clear</v-btn>
+      -->
     </v-card-actions>
   </v-card>
   <v-data-table 
@@ -26,6 +30,8 @@ import { getUrlKey } from '@/utils/tools';
 
 export default {
   data: () => ({
+    isSelectedTable: false,
+    tableLabel: '',
     items: [],
     headers: [],
     /*
@@ -62,6 +68,9 @@ export default {
     ],
     */
   }),
+  mounted: function() {
+    //this.isUT = getUrlKey('type', window.location.href) === 'UT' ? true : false;
+  },
   methods: {
     cleanTable: function () {
       this.items = []
@@ -73,12 +82,19 @@ export default {
       const type = getUrlKey('type', window.location.href); 
       if (this.$store.state.selectedSchema == '')
         return;
+      this.isSelectedTable = true
+      const schemaName = this.$store.state.selectedSchema
+      this.tableLabel = schemaName[0].slice(schemaName[0].lastIndexOf('\\')+1)
+      /*
+      console.log(schemaName[0])
+      console.log(this.tableLabel)
+      */
       this.items = []
       this.headers = []
       return axios({
           method: 'get',
           baseURL: '/api',
-          url: `/schema-data?ip=${ip}&port=${port}&type=${type}&schema-name=${this.$store.state.selectedSchema}`,
+          url: `/schema-data?ip=${ip}&port=${port}&type=${type}&schema-name=${schemaName}`,
         })
         .then(response => {
           this.items = response.data.items;

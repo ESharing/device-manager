@@ -24,10 +24,9 @@
                       <data-table></data-table>
                     </pane>
                     <pane size=0>
-                        <span>2</span>
+                      <data-table></data-table>
                     </pane>
                     <pane size=0>
-                        <span>3</span>
                     </pane>
                 </splitpanes>
             </pane>
