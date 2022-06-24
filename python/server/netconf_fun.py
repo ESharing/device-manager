@@ -110,14 +110,14 @@ def getSchemas(node_ip, port, ne_type):
 
 def getSchemasFromFile(ne_type):
   if ( ne_type == "UT"):
-    with open(sys.path[0] + '/ut-yang/jtox.json') as f:
+    with open(sys.path[0] + '/ut-yang-jtox.json') as f:
     #with open('.\cucc-yang\jtox-if-acl.json') as f:
         schemaStore[ne_type] = json.load(f)
         #schemaStore[ne_type] = copy.deepcopy(data)
         #schemaModule = data["modules"]
         return generateSchemas(schemaStore[ne_type]["tree"], schemaStore[ne_type]["modules"])
   else:
-    with open(sys.path[0] + '/cucc-yang/jtox.json') as f:
+    with open(sys.path[0] + '/cucc-yang-jtox.json') as f:
         schemaStore[ne_type] = json.load(f)
         return generateSchemas(schemaStore[ne_type]["tree"], schemaStore[ne_type]["modules"])
 

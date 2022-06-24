@@ -1,26 +1,41 @@
 <template>
 <div>
+  <v-card>
+      <!--
+      <v-btn small @click="getSchemaData">Query</v-btn>
   <v-card class="mx-auto" outlined>
     <v-card-actions>
-      <v-btn small @click="getSchemaData">Query</v-btn>
       <v-btn disabled text v-show="isSelectedTable" right>{{tableLabel}}</v-btn>
-      <!--
       <v-btn small @click="translateColumn" v-if="isUT">Translate</v-btn>
       <v-btn small>Add</v-btn>
       <v-btn small>Edit</v-btn>
       <v-btn small>Delete</v-btn>
       <v-btn small @click="cleanTable">Clear</v-btn>
-      -->
     </v-card-actions>
-  </v-card>
+      <v-spacer></v-spacer>
+      -->
+    <v-card-title>
+      <v-btn small @click="getSchemaData">Query</v-btn>
+      <v-spacer></v-spacer>
+      <v-spacer>{{tableLabel}}</v-spacer>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>    
+    </v-card-title>
   <v-data-table 
     dense 
     :headers="headers" 
     :items="items" 
+    :search="search"
     item-key="name" 
     class="elevation-1" 
     height="600px" 
     fixed-header ></v-data-table>
+  </v-card>
 </div>
 </template>
 
@@ -34,6 +49,7 @@ export default {
     tableLabel: '',
     items: [],
     headers: [],
+    search:'',
     /*
     items : [
       {

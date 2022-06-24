@@ -29,3 +29,4 @@ pnpm-debug.log*
 /python/server/yang
 /python/server/ut-yang
 /python/server/cucc-yang
+/python/server/__pycache__
