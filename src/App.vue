@@ -31,7 +31,7 @@
                 </splitpanes>
             </pane>
             <pane size=27>
-                <p>TBD</p>
+                <iframe v-bind:src="url" style="width: 100%; height: 100%;"/>
             </pane>
         </splitpanes>
     </pane>
@@ -50,6 +50,7 @@ import SchemaTreeNavi from './components/SchemaTreeNavi.vue'
 import ObjectTreeNavi from './components/ObjectTreeNavi.vue'
 import vuescroll from 'vuescroll'
 import DataTable from './components/DataTable.vue'
+import { getUrlKey } from '@/utils/tools';
 
 export default {
     name: 'App',
@@ -62,7 +63,8 @@ export default {
                 bar: {
                     background: '#bbbebb',
                 }
-            }
+            },
+            url: ""
         }
     },
     components: {
@@ -73,5 +75,9 @@ export default {
         vuescroll,
         DataTable
     },
+  mounted: function() {
+    const host = getUrlKey('ip', window.location.href);
+    this.url = "http://"+window.location.hostname+":30377/ssh/host/" + host;
+  },
 }
 </script>
